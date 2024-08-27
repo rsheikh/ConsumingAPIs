@@ -12,11 +12,11 @@ import java.util.ArrayList;
 public class FakeBooksDAO {
     WebClient webClient;
 
-    public ResponseEntity<Data> getResponseBody() {
+    public ResponseEntity<Data> getResponseBody(String uri) {
         webClient = WebClient.create();
 
         ResponseEntity<Data> bookMono = webClient.get()
-                .uri("https://fakerapi.it/api/v1/books").accept(MediaType.APPLICATION_JSON)
+                .uri(uri).accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .toEntity(Data.class)
                 .block();
@@ -33,5 +33,21 @@ public class FakeBooksDAO {
             throw new RuntimeException("No data found!");
         }
     }
+
+    public String getQueryWithParameters(ArrayList<String> queryParams) {
+        String uri = "https://fakerapi.it/api/v1/books/";
+        if (!queryParams.isEmpty()) {
+            for (int i = 0; i < queryParams.size(); i++) {
+                if (i == 0) {
+                    uri += "?" + queryParams.get(0);
+                } else {
+                    uri += "&" + queryParams.get(i);
+                }
+            }
+        }
+        return uri;
+    }
+
+    // https://fakeapi.it/api/v1/books/
 
 }
